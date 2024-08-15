@@ -36,8 +36,7 @@
 	},
 	"homepage": "https://github.com/tutkli/jikan-ts#readme",
 	"peerDependencies": {
-		"axios": "^1.6.8",
-		"axios-cache-interceptor": "^1.5.2"
+		"xior": "^0.5.5"
 	},
 	"devDependencies": {
 		"@biomejs/biome": "1.7.3",
@@ -45,8 +44,7 @@
 		"@vitest/coverage-v8": "^1.6.0",
 		"@vitest/ui": "^1.6.0",
 		"auto-changelog": "^2.4.0",
-		"axios": "^1.6.8",
-		"axios-cache-interceptor": "^1.5.2",
+		"xior": "^0.5.5",
 		"lint-staged": "^15.2.2",
 		"tsup": "^8.0.2",
 		"typescript": "5.4.5",

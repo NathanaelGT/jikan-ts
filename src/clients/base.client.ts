@@ -1,17 +1,4 @@
-import axios, { type AxiosError } from 'axios'
-import {
-	type AxiosCacheInstance,
-	type CacheAxiosResponse,
-	type CacheOptions,
-	type InternalCacheRequestConfig,
-	setupCache
-} from 'axios-cache-interceptor'
-import {
-	handleRequest,
-	handleRequestError,
-	handleResponse,
-	handleResponseError
-} from '../config'
+import xior, { type XiorInstance } from 'xior'
 import { BaseURL } from '../constants'
 import type { JikanResponse } from '../models'
 
@@ -22,17 +9,6 @@ import type { JikanResponse } from '../models'
  */
 export interface ClientArgs {
 	/**
-	 * **EnableLogging**
-	 * Enables logging request responses.
-	 */
-	enableLogging: boolean
-	/**
-	 * **Axios Cache Options**
-	 * Options for cache.
-	 * @see https://axios-cache-interceptor.js.org/#/pages/configuration
-	 */
-	cacheOptions: Partial<CacheOptions>
-	/**
 	 * **Base URL**
 	 * Location of the JikanAPI. Leave empty to use the official JikanAPI instance.
 	 */
@@ -42,25 +18,18 @@ export interface ClientArgs {
 /**
  * **Base Client**
  *
- * This client is responsible for creating an Axios Instance and the cache and logging configurations
+ * This client is responsible for creating an Xior Instance and the cache and logging configurations
  */
 export abstract class BaseClient {
-	private api: AxiosCacheInstance
+	private api: XiorInstance
 
 	constructor(clientOptions: Partial<ClientArgs> = {}) {
-		this.api = setupCache(
-			axios.create({
-				baseURL: clientOptions.baseURL ?? BaseURL,
-				headers: {
-					'Content-Type': 'application/json'
-				}
-			}),
-			{ ...clientOptions.cacheOptions, cacheTakeover: false }
-		)
-
-		if (clientOptions.enableLogging) {
-			this.addLoggingInterceptors()
-		}
+		this.api = xior.create({
+      baseURL: clientOptions.baseURL ?? BaseURL,
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
 	}
 
 	protected async getResource<T>(
@@ -89,17 +58,5 @@ export abstract class BaseClient {
 			endpoint = endpoint.replace(`{${param}}`, String(params[param]))
 		}
 		return endpoint
-	}
-
-	private addLoggingInterceptors(): void {
-		this.api.interceptors.request.use(
-			(config: InternalCacheRequestConfig) => handleRequest(config),
-			(error: AxiosError<string>) => handleRequestError(error)
-		)
-
-		this.api.interceptors.response.use(
-			(response: CacheAxiosResponse) => handleResponse(response),
-			(error: AxiosError<string>) => handleResponseError(error)
-		)
 	}
 }

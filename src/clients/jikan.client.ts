@@ -1,5 +1,4 @@
 import { AnimeClient } from './anime.client'
-import type { ClientArgs } from './base.client'
 import { CharactersClient } from './characters.client'
 import { GenresClient } from './genres.client'
 import { MangaClient } from './manga.client'
@@ -7,6 +6,7 @@ import { RandomClient } from './random.client'
 import { SchedulesClient } from './schedules.client'
 import { SeasonsClient } from './seasons.client'
 import { TopClient } from './top.client'
+import type { KyInstance } from 'ky'
 
 /**
  * **Jikan Client**
@@ -25,14 +25,14 @@ export class JikanClient {
 	public seasons: SeasonsClient
 	public random: RandomClient
 
-	constructor(clientOptions?: Partial<ClientArgs>) {
-		this.anime = new AnimeClient(clientOptions)
-		this.characters = new CharactersClient(clientOptions)
-		this.genres = new GenresClient(clientOptions)
-		this.manga = new MangaClient(clientOptions)
-		this.top = new TopClient(clientOptions)
-		this.schedules = new SchedulesClient(clientOptions)
-		this.seasons = new SeasonsClient(clientOptions)
-		this.random = new RandomClient(clientOptions)
+	constructor(api: KyInstance) {
+		this.anime = new AnimeClient(api)
+		this.characters = new CharactersClient(api)
+		this.genres = new GenresClient(api)
+		this.manga = new MangaClient(api)
+		this.top = new TopClient(api)
+		this.schedules = new SchedulesClient(api)
+		this.seasons = new SeasonsClient(api)
+		this.random = new RandomClient(api)
 	}
 }

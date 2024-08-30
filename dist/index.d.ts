@@ -1,3 +1,5 @@
+import { KyInstance } from 'ky';
+
 interface JikanImages {
     jpg: JikanImagesCollection;
     webp?: JikanImagesCollection;
@@ -462,29 +464,17 @@ interface JikanResponse<T> {
 }
 
 /**
- * **Client Args**
- *
- * Used to pass optional configuration for logging and cache to the clients.
- */
-interface ClientArgs {
-    /**
-     * **Base URL**
-     * Location of the JikanAPI. Leave empty to use the official JikanAPI instance.
-     */
-    baseURL: string;
-}
-/**
  * **Base Client**
  *
- * This client is responsible for creating an Xior Instance and the cache and logging configurations
+ * This client is responsible for creating an Ky Instance and the cache and logging configurations
  */
 declare abstract class BaseClient {
     private api;
-    constructor(clientOptions?: Partial<ClientArgs>);
+    constructor(api: KyInstance);
     protected getResource<T>(endpoint: string, pathParams?: {
         [key in string]: unknown;
-    }, params?: {
-        [key in string]: unknown;
+    }, searchParams?: {
+        [key in string]: string | number | boolean | undefined;
     }): Promise<JikanResponse<T>>;
     private replacePathParams;
 }
@@ -834,82 +824,82 @@ declare class JikanClient {
     schedules: SchedulesClient;
     seasons: SeasonsClient;
     random: RandomClient;
-    constructor(clientOptions?: Partial<ClientArgs>);
+    constructor(api: KyInstance);
 }
 
 declare const BaseURL = "https://api.jikan.moe/v4";
 
 declare const AnimeEndpoints: {
-    readonly animeFullById: "/anime/{id}/full";
-    readonly animeById: "/anime/{id}";
-    readonly animeCharacters: "/anime/{id}/characters";
-    readonly animeStaff: "/anime/{id}/staff";
-    readonly animeEpisodes: "/anime/{id}/episodes";
-    readonly animeEpisodeById: "/anime/{id}/episodes/{episode}";
-    readonly animeNews: "/anime/{id}/news";
-    readonly animeForum: "/anime/{id}/forum";
-    readonly animeVideos: "/anime/{id}/videos";
-    readonly animeVideosEpisodes: "/anime/{id}/videos/episodes";
-    readonly animePictures: "/anime/{id}/pictures";
-    readonly animeStatistics: "/anime/{id}/statistics";
-    readonly animeMoreInfo: "/anime/{id}/moreinfo";
-    readonly animeRecommendations: "/anime/{id}/recommendations";
-    readonly animeUserUpdates: "/anime/{id}/userupdates";
-    readonly animeReviews: "/anime/{id}/reviews";
-    readonly animeRelations: "/anime/{id}/relations";
-    readonly animeThemes: "/anime/{id}/themes";
-    readonly animeExternal: "/anime/{id}/external";
-    readonly animeStreaming: "/anime/{id}/streaming";
-    readonly animeSearch: "/anime";
+    readonly animeFullById: "anime/{id}/full";
+    readonly animeById: "anime/{id}";
+    readonly animeCharacters: "anime/{id}/characters";
+    readonly animeStaff: "anime/{id}/staff";
+    readonly animeEpisodes: "anime/{id}/episodes";
+    readonly animeEpisodeById: "anime/{id}/episodes/{episode}";
+    readonly animeNews: "anime/{id}/news";
+    readonly animeForum: "anime/{id}/forum";
+    readonly animeVideos: "anime/{id}/videos";
+    readonly animeVideosEpisodes: "anime/{id}/videos/episodes";
+    readonly animePictures: "anime/{id}/pictures";
+    readonly animeStatistics: "anime/{id}/statistics";
+    readonly animeMoreInfo: "anime/{id}/moreinfo";
+    readonly animeRecommendations: "anime/{id}/recommendations";
+    readonly animeUserUpdates: "anime/{id}/userupdates";
+    readonly animeReviews: "anime/{id}/reviews";
+    readonly animeRelations: "anime/{id}/relations";
+    readonly animeThemes: "anime/{id}/themes";
+    readonly animeExternal: "anime/{id}/external";
+    readonly animeStreaming: "anime/{id}/streaming";
+    readonly animeSearch: "anime";
 };
 
 declare const CharactersEndpoints: {
-    readonly characterFullById: "/characters/{id}/full";
-    readonly characterById: "/characters/{id}";
-    readonly characterAnime: "/characters/{id}/anime";
-    readonly charactersManga: "/characters/{id}/manga";
-    readonly characterVoiceActors: "/characters/{id}/voices";
-    readonly characterPictures: "/characters/{id}/pictures";
-    readonly characterSearch: "/characters";
+    readonly characterFullById: "characters/{id}/full";
+    readonly characterById: "characters/{id}";
+    readonly characterAnime: "characters/{id}/anime";
+    readonly charactersManga: "characters/{id}/manga";
+    readonly characterVoiceActors: "characters/{id}/voices";
+    readonly characterPictures: "characters/{id}/pictures";
+    readonly characterSearch: "characters";
 };
 
 declare const GenresEndpoints: {
-    readonly animeGenres: "/genres/anime";
-    readonly mangaGenres: "/genres/manga";
+    readonly animeGenres: "genres/anime";
+    readonly mangaGenres: "genres/manga";
 };
 
 declare const MangaEndpoints: {
-    readonly mangaSearch: "/manga";
-    readonly mangaFullById: "/manga/{id}/full";
-    readonly mangaById: "/manga/{id}";
-    readonly mangaCharacters: "/manga/{id}/characters";
+    readonly mangaSearch: "manga";
+    readonly mangaFullById: "manga/{id}/full";
+    readonly mangaById: "manga/{id}";
+    readonly mangaCharacters: "manga/{id}/characters";
     readonly mangaNews: "manga/{id}/news";
-    readonly mangaTopics: "/manga/{id}/forum";
-    readonly mangaPictures: "/manga/{id}/pictures";
-    readonly mangaStatistics: "/manga/{id}/statistics";
-    readonly mangaMoreInfo: "/manga/{id}/moreinfo";
+    readonly mangaTopics: "manga/{id}/forum";
+    readonly mangaPictures: "manga/{id}/pictures";
+    readonly mangaStatistics: "manga/{id}/statistics";
+    readonly mangaMoreInfo: "manga/{id}/moreinfo";
     readonly mangaRelations: "manga/{id}/relations";
-    readonly mangaExternal: "/manga/{id}/external";
-    readonly mangaRecommendations: "/manga/{id}/recommendations";
+    readonly mangaExternal: "manga/{id}/external";
+    readonly mangaRecommendations: "manga/{id}/recommendations";
 };
 
 declare const SeasonsEndpoints: {
-    readonly season: "/seasons/{year}/{season}";
-    readonly seasonNow: "/seasons/now";
-    readonly seasonsList: "/seasons";
-    readonly seasonUpcoming: "/seasons/upcoming";
+    readonly season: "seasons/{year}/{season}";
+    readonly seasonNow: "seasons/now";
+    readonly seasonsList: "seasons";
+    readonly seasonUpcoming: "seasons/upcoming";
 };
 
 declare const TopEndpoints: {
-    readonly topAnime: "/top/anime";
-    readonly topManga: "/top/manga";
-    readonly topCharacters: "/top/characters";
+    readonly topAnime: "top/anime";
+    readonly topManga: "top/manga";
+    readonly topCharacters: "top/characters";
 };
 
 declare const RandomEndpoints: {
-    readonly randomAnime: "/random/anime";
-    readonly randomManga: "/random/manga";
-    readonly randomCharacters: "/random/characters";
+    readonly randomAnime: "random/anime";
+    readonly randomManga: "random/manga";
+    readonly randomCharacters: "random/characters";
 };
 
-export { type Anime, type AnimeBroadcast, type AnimeCharacter, AnimeClient, AnimeEndpoints, type AnimeEpisode, type AnimeEpisodeVideo, type AnimeMusicVideo, type AnimePicture, type AnimePromoVideo, type AnimeRating, type AnimeSearchOrder, type AnimeSearchParams, type AnimeSearchStatus, type AnimeSeason, type AnimeStaff, type AnimeStatistics, type AnimeStatus, type AnimeTheme, type AnimeTopParams, type AnimeType, type AnimeVideoMeta, type AnimeVideos, type AnimeYoutubeVideo, BaseClient, BaseURL, type Character, type CharacterAnime, type CharacterFull, type CharacterManga, type CharacterRole, type CharacterVoiceActor, CharactersClient, CharactersEndpoints, type CharactersSearchOrder, type CharactersSearchParams, type ClientArgs, type CommonCharacter, type CommonCharacterData, type ForumFilter, type Genre, GenresClient, GenresEndpoints, type GenresFilter, JikanClient, type JikanExternalLink, type JikanForum, type JikanImages, type JikanImagesCollection, type JikanMoreInfo, type JikanNamedResource, type JikanNews, type JikanPagination, type JikanPaginationItems, type JikanPerson, type JikanRelation, type JikanResource, type JikanResourcePeriod, type JikanResourceRelation, type JikanResourceTitle, type JikanResponse, type JikanSearchParams, type JikanSeasonsParams, type JikanTopParams, type Manga, MangaClient, MangaEndpoints, type MangaSearchOrder, type MangaSearchParams, type MangaSearchStatus, type MangaStatistics, type MangaStatus, type MangaTopParams, type MangaType, RandomClient, RandomEndpoints, type Recommendation, type RecommendationEntry, type RelationEntry, SchedulesClient, type SchedulesFilter, type SchedulesParams, type SearchOrder, type SeasonNowParams, SeasonsClient, SeasonsEndpoints, type SeasonsListData, type SortOptions, type Statistics, type StatisticsScore, type TopAnimeFilter, TopClient, TopEndpoints, type TopMangaFilter };
+export { type Anime, type AnimeBroadcast, type AnimeCharacter, AnimeClient, AnimeEndpoints, type AnimeEpisode, type AnimeEpisodeVideo, type AnimeMusicVideo, type AnimePicture, type AnimePromoVideo, type AnimeRating, type AnimeSearchOrder, type AnimeSearchParams, type AnimeSearchStatus, type AnimeSeason, type AnimeStaff, type AnimeStatistics, type AnimeStatus, type AnimeTheme, type AnimeTopParams, type AnimeType, type AnimeVideoMeta, type AnimeVideos, type AnimeYoutubeVideo, BaseClient, BaseURL, type Character, type CharacterAnime, type CharacterFull, type CharacterManga, type CharacterRole, type CharacterVoiceActor, CharactersClient, CharactersEndpoints, type CharactersSearchOrder, type CharactersSearchParams, type CommonCharacter, type CommonCharacterData, type ForumFilter, type Genre, GenresClient, GenresEndpoints, type GenresFilter, JikanClient, type JikanExternalLink, type JikanForum, type JikanImages, type JikanImagesCollection, type JikanMoreInfo, type JikanNamedResource, type JikanNews, type JikanPagination, type JikanPaginationItems, type JikanPerson, type JikanRelation, type JikanResource, type JikanResourcePeriod, type JikanResourceRelation, type JikanResourceTitle, type JikanResponse, type JikanSearchParams, type JikanSeasonsParams, type JikanTopParams, type Manga, MangaClient, MangaEndpoints, type MangaSearchOrder, type MangaSearchParams, type MangaSearchStatus, type MangaStatistics, type MangaStatus, type MangaTopParams, type MangaType, RandomClient, RandomEndpoints, type Recommendation, type RecommendationEntry, type RelationEntry, SchedulesClient, type SchedulesFilter, type SchedulesParams, type SearchOrder, type SeasonNowParams, SeasonsClient, SeasonsEndpoints, type SeasonsListData, type SortOptions, type Statistics, type StatisticsScore, type TopAnimeFilter, TopClient, TopEndpoints, type TopMangaFilter };

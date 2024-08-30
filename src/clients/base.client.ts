@@ -1,50 +1,33 @@
-import xior, { type XiorInstance } from 'xior'
-import { BaseURL } from '../constants'
+import type { KyInstance } from 'ky'
 import type { JikanResponse } from '../models'
-
-/**
- * **Client Args**
- *
- * Used to pass optional configuration for logging and cache to the clients.
- */
-export interface ClientArgs {
-	/**
-	 * **Base URL**
-	 * Location of the JikanAPI. Leave empty to use the official JikanAPI instance.
-	 */
-	baseURL: string
-}
 
 /**
  * **Base Client**
  *
- * This client is responsible for creating an Xior Instance and the cache and logging configurations
+ * This client is responsible for creating an Ky Instance and the cache and logging configurations
  */
 export abstract class BaseClient {
-	private api: XiorInstance
-
-	constructor(clientOptions: Partial<ClientArgs> = {}) {
-		this.api = xior.create({
-      baseURL: clientOptions.baseURL ?? BaseURL,
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
-	}
+	constructor(private api: KyInstance) {}
 
 	protected async getResource<T>(
 		endpoint: string,
 		pathParams: { [key in string]: unknown } = {},
-		params: { [key in string]: unknown } = {}
+		searchParams: { [key in string]: string | number | boolean | undefined } = {}
 	): Promise<JikanResponse<T>> {
+    for (const key in searchParams) {
+      if (searchParams[key] === undefined) {
+        delete searchParams[key]
+      }
+    }
+
 		return (
 			await this.api.get<JikanResponse<T>>(
 				this.replacePathParams(endpoint, pathParams),
 				{
-					params
+					searchParams: searchParams as { [key in string]: string | number | boolean }
 				}
 			)
-		).data
+		).json()
 	}
 
 	private replacePathParams(

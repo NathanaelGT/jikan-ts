@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import ky from 'ky'
 import { SeasonsClient } from '../clients'
 import {
 	type Anime,
@@ -9,11 +10,14 @@ import {
 	type SeasonNowParams,
 	type SeasonsListData
 } from '../models'
+import { BaseURL } from '../constants'
 
 describe('test Seasons Client', () => {
 	let client: SeasonsClient
 	beforeAll(() => {
-		client = new SeasonsClient()
+		client = new SeasonsClient(ky.create({
+      prefixUrl: BaseURL,
+    }))
 	})
 	beforeEach(async () => {
 		await new Promise(resolve => setTimeout(resolve, 1000))

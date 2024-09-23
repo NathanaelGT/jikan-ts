@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import ky from 'ky'
 import { TopClient } from '../clients'
 import {
 	type Anime,
@@ -11,11 +12,14 @@ import {
 	TopAnimeFilter,
 	TopMangaFilter
 } from '../models'
+import { BaseURL } from '../constants'
 
 describe('test Top Client', () => {
 	let client: TopClient
 	beforeAll(() => {
-		client = new TopClient()
+		client = new TopClient(ky.create({
+      prefixUrl: BaseURL,
+    }))
 	})
 	beforeEach(async () => {
 		await new Promise(resolve => setTimeout(resolve, 1000))

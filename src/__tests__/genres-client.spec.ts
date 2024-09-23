@@ -1,11 +1,15 @@
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import ky from 'ky'
 import { GenresClient } from '../clients'
 import { type Genre, GenresFilter, type JikanResponse } from '../models'
+import { BaseURL } from '../constants'
 
 describe('test Genres Client', () => {
 	let client: GenresClient
 	beforeAll(() => {
-		client = new GenresClient()
+		client = new GenresClient(ky.create({
+      prefixUrl: BaseURL,
+    }))
 	})
 	beforeEach(async () => {
 		await new Promise(resolve => setTimeout(resolve, 1000))

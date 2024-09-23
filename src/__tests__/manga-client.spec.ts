@@ -1,4 +1,5 @@
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import ky from 'ky'
 import { MangaClient } from '../clients'
 import type {
 	CommonCharacter,
@@ -9,11 +10,14 @@ import type {
 	MangaStatistics,
 	Recommendation
 } from '../models'
+import { BaseURL } from '../constants'
 
 describe('test Manga Client', () => {
 	let client: MangaClient
 	beforeAll(() => {
-		client = new MangaClient()
+		client = new MangaClient(ky.create({
+      prefixUrl: BaseURL,
+    }))
 	})
 	beforeEach(async () => {
 		await new Promise(resolve => setTimeout(resolve, 1000))

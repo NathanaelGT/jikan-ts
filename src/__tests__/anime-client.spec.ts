@@ -1,12 +1,16 @@
 import { assertType, beforeAll, beforeEach, describe, expect, it } from 'vitest'
+import ky from 'ky'
 import { AnimeClient } from '../clients'
 import type { AnimeSearchParams } from '../models'
+import { BaseURL } from '../constants'
 
 describe('test Anime Client', () => {
 	let client: AnimeClient
 
 	beforeAll(() => {
-		client = new AnimeClient()
+		client = new AnimeClient(ky.create({
+      prefixUrl: BaseURL,
+    }))
 	})
 
 	// Prevent rate-limit errors. See: https://docs.api.jikan.moe/#section/Information/Rate-Limiting

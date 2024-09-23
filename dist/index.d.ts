@@ -462,6 +462,26 @@ interface JikanResponse<T> {
     data: T;
     pagination?: JikanPagination;
 }
+interface JikanResponseHeader {
+    'Access-Control-Allow-Origin': string;
+    'Cache-Control': string;
+    'Content-Encoding': string;
+    'Content-Type': 'application/json';
+    'Date': string;
+    'Expires': string;
+    'Last-Modified': string;
+    'Server': string;
+    'Vary': string;
+    'X-Cache-Status': string;
+    'X-Powered-By': 'the-power-of-friendship';
+    'X-Request-Fingerprint': string | null;
+}
+interface JikanResponseFull<T> extends JikanResponse<T> {
+    header: Omit<Headers, 'get' | 'has'> & {
+        get<TName extends keyof JikanResponseHeader | (string & {})>(name: TName): TName extends keyof JikanResponseHeader ? JikanResponseHeader[TName] : string | null;
+        has(name: keyof JikanResponseHeader | (string & {})): boolean;
+    };
+}
 
 /**
  * **Base Client**
@@ -475,7 +495,7 @@ declare abstract class BaseClient {
         [key in string]: unknown;
     }, searchParams?: {
         [key in string]: string | number | boolean | undefined;
-    }): Promise<JikanResponse<T>>;
+    }): Promise<JikanResponseFull<T>>;
     private replacePathParams;
 }
 
@@ -491,92 +511,92 @@ declare class AnimeClient extends BaseClient {
      * Get complete anime resource data
      * @param id anime id
      */
-    getAnimeFullById(id: number): Promise<JikanResponse<Anime>>;
+    getAnimeFullById(id: number): Promise<JikanResponseFull<Anime>>;
     /**
      * Get anime resource
      * @param id anime id
      */
-    getAnimeById(id: number): Promise<JikanResponse<Anime>>;
+    getAnimeById(id: number): Promise<JikanResponseFull<Anime>>;
     /**
      * Get characters of a specific anime
      * @param id anime id
      */
-    getAnimeCharacters(id: number): Promise<JikanResponse<AnimeCharacter[]>>;
+    getAnimeCharacters(id: number): Promise<JikanResponseFull<AnimeCharacter[]>>;
     /**
      * Get staff of a specific Anime
      * @param id anime id
      */
-    getAnimeStaff(id: number): Promise<JikanResponse<AnimeStaff[]>>;
+    getAnimeStaff(id: number): Promise<JikanResponseFull<AnimeStaff[]>>;
     /**
      * Get a list of all the episodes of a specific anime
      * @param id anime id
      * @param page page number
      */
-    getAnimeEpisodes(id: number, page?: number): Promise<JikanResponse<AnimeEpisode[]>>;
+    getAnimeEpisodes(id: number, page?: number): Promise<JikanResponseFull<AnimeEpisode[]>>;
     /**
      * Get a single episode of a specific anime by its id
      * @param anime_id anime id
      * @param episode_id episode id
      */
-    getAnimeEpisodeById(anime_id: number, episode_id: number): Promise<JikanResponse<AnimeEpisode>>;
+    getAnimeEpisodeById(anime_id: number, episode_id: number): Promise<JikanResponseFull<AnimeEpisode>>;
     /**
      * Get a list of news articles related to the anime
      * @param id anime id
      * @param page page number
      */
-    getAnimeNews(id: number, page: number): Promise<JikanResponse<JikanNews[]>>;
+    getAnimeNews(id: number, page: number): Promise<JikanResponseFull<JikanNews[]>>;
     /**
      * Get a list of forum topics related to the anime
      * @param id anime id
      * @param filter filter topics
      */
-    getAnimeForum(id: number, filter?: ForumFilter): Promise<JikanResponse<JikanForum[]>>;
+    getAnimeForum(id: number, filter?: ForumFilter): Promise<JikanResponseFull<JikanForum[]>>;
     /**
      * Get videos related to the anime
      * @param id anime id
      */
-    getAnimeVideos(id: number): Promise<JikanResponse<AnimeVideos>>;
+    getAnimeVideos(id: number): Promise<JikanResponseFull<AnimeVideos>>;
     /**
      * Get episode videos related to the anime
      * @param id anime id
      * @param page page number
      */
-    getAnimeEpisodeVideos(id: number, page?: number): Promise<JikanResponse<AnimeEpisodeVideo[]>>;
+    getAnimeEpisodeVideos(id: number, page?: number): Promise<JikanResponseFull<AnimeEpisodeVideo[]>>;
     /**
      * Get pictures related to the Anime
      * @param id anime id
      */
-    getAnimePictures(id: number): Promise<JikanResponse<AnimePicture[]>>;
+    getAnimePictures(id: number): Promise<JikanResponseFull<AnimePicture[]>>;
     /**
      * Get statistics related to the Anime
      * @param id anime id
      */
-    getAnimeStatistics(id: number): Promise<JikanResponse<AnimeStatistics>>;
+    getAnimeStatistics(id: number): Promise<JikanResponseFull<AnimeStatistics>>;
     /**
      * Get more info related to the anime
      * @param id anime id
      */
-    getAnimeMoreInfo(id: number): Promise<JikanResponse<JikanMoreInfo>>;
+    getAnimeMoreInfo(id: number): Promise<JikanResponseFull<JikanMoreInfo>>;
     /**
      * Get recommendations based on the anime
      * @param id anime id
      */
-    getAnimeRecommendations(id: number): Promise<JikanResponse<Recommendation[]>>;
+    getAnimeRecommendations(id: number): Promise<JikanResponseFull<Recommendation[]>>;
     /**
      * Get anime relations
      * @param id anime id
      */
-    getAnimeRelations(id: number): Promise<JikanResponse<JikanRelation[]>>;
+    getAnimeRelations(id: number): Promise<JikanResponseFull<JikanRelation[]>>;
     /**
      * Get anime external links
      * @param id anime id
      */
-    getAnimeExternal(id: number): Promise<JikanResponse<JikanExternalLink[]>>;
+    getAnimeExternal(id: number): Promise<JikanResponseFull<JikanExternalLink[]>>;
     /**
      * Get all the Animes within the given filter. Returns all the Animes if no filters are given.
      * @param searchParams Filter parameters
      */
-    getAnimeSearch(searchParams?: Partial<AnimeSearchParams>): Promise<JikanResponse<Anime[]>>;
+    getAnimeSearch(searchParams?: Partial<AnimeSearchParams>): Promise<JikanResponseFull<Anime[]>>;
 }
 
 /**
@@ -591,37 +611,37 @@ declare class CharactersClient extends BaseClient {
      * Get complete Character data
      * @param id The Character ID
      */
-    getCharacterFullById(id: number): Promise<JikanResponse<CharacterFull>>;
+    getCharacterFullById(id: number): Promise<JikanResponseFull<CharacterFull>>;
     /**
      * Get Character data
      * @param id The Character ID
      */
-    getCharacterById(id: number): Promise<JikanResponse<Character>>;
+    getCharacterById(id: number): Promise<JikanResponseFull<Character>>;
     /**
      * Get Character anime data
      * @param id The Character ID
      */
-    getCharacterAnime(id: number): Promise<JikanResponse<CharacterAnime[]>>;
+    getCharacterAnime(id: number): Promise<JikanResponseFull<CharacterAnime[]>>;
     /**
      * Get Character manga data
      * @param id The Character ID
      */
-    getCharacterManga(id: number): Promise<JikanResponse<CharacterManga[]>>;
+    getCharacterManga(id: number): Promise<JikanResponseFull<CharacterManga[]>>;
     /**
      * Get Character voices data
      * @param id The Character ID
      */
-    getCharacterVoiceActors(id: number): Promise<JikanResponse<CharacterVoiceActor[]>>;
+    getCharacterVoiceActors(id: number): Promise<JikanResponseFull<CharacterVoiceActor[]>>;
     /**
      * Get Character pictures data
      * @param id The Character ID
      */
-    getCharacterPictures(id: number): Promise<JikanResponse<JikanImagesCollection[]>>;
+    getCharacterPictures(id: number): Promise<JikanResponseFull<JikanImagesCollection[]>>;
     /**
      * Get all the Characters within the given filter. Returns all Characters if no filters are given.
      * @param searchParams Filter parameters
      */
-    getCharacterSearch(searchParams: Partial<CharactersSearchParams>): Promise<JikanResponse<Character[]>>;
+    getCharacterSearch(searchParams: Partial<CharactersSearchParams>): Promise<JikanResponseFull<Character[]>>;
 }
 
 /**
@@ -636,12 +656,12 @@ declare class GenresClient extends BaseClient {
      * Get Anime genres
      * @param filter Type of the desired genres
      */
-    getAnimeGenres(filter?: GenresFilter): Promise<JikanResponse<Genre[]>>;
+    getAnimeGenres(filter?: GenresFilter): Promise<JikanResponseFull<Genre[]>>;
     /**
      * Get Manga genres
      * @param filter Type of the desired genres
      */
-    getMangaGenres(filter?: GenresFilter): Promise<JikanResponse<Genre[]>>;
+    getMangaGenres(filter?: GenresFilter): Promise<JikanResponseFull<Genre[]>>;
 }
 
 /**
@@ -656,63 +676,63 @@ declare class MangaClient extends BaseClient {
      * Get a Manga with full information by its ID
      * @param id The Manga ID
      */
-    getMangaFullById(id: number): Promise<JikanResponse<Manga>>;
+    getMangaFullById(id: number): Promise<JikanResponseFull<Manga>>;
     /**
      * Get a Manga by its ID
      * @param id The Manga ID
      */
-    getMangaById(id: number): Promise<JikanResponse<Manga>>;
+    getMangaById(id: number): Promise<JikanResponseFull<Manga>>;
     /**
      * Get Characters of a specific Manga
      * @param id The Manga ID
      */
-    getMangaCharacters(id: number): Promise<JikanResponse<CommonCharacter[]>>;
+    getMangaCharacters(id: number): Promise<JikanResponseFull<CommonCharacter[]>>;
     /**
      * Get a list of manga news
      * @param id The Manga ID
      */
-    getMangaNews(id: string): Promise<JikanResponse<JikanNews[]>>;
+    getMangaNews(id: string): Promise<JikanResponseFull<JikanNews[]>>;
     /**
      * Get a list og manga forum topics
      * @param id The manga ID
      * @param filter Filter topics
      */
-    getMangaTopics(id: string, filter?: ForumFilter): Promise<JikanResponse<JikanForum[]>>;
+    getMangaTopics(id: string, filter?: ForumFilter): Promise<JikanResponseFull<JikanForum[]>>;
     /**
      * Get Pictures related to a specific Manga
      * @param id The Manga ID
      */
-    getMangaPictures(id: number): Promise<JikanResponse<JikanImages[]>>;
+    getMangaPictures(id: number): Promise<JikanResponseFull<JikanImages[]>>;
     /**
      * Get Statistics related to a specific Manga
      * @param id The Manga ID
      */
-    getMangaStatistics(id: number): Promise<JikanResponse<MangaStatistics>>;
+    getMangaStatistics(id: number): Promise<JikanResponseFull<MangaStatistics>>;
     /**
      * Get more info related to the manga
      * @param id manga id
      */
-    getMangaMoreInfo(id: number): Promise<JikanResponse<JikanMoreInfo>>;
+    getMangaMoreInfo(id: number): Promise<JikanResponseFull<JikanMoreInfo>>;
     /**
      * Get Recommendations related to a specific Manga
      * @param id The Manga ID
      */
-    getMangaRecommendations(id: number): Promise<JikanResponse<Recommendation[]>>;
+    getMangaRecommendations(id: number): Promise<JikanResponseFull<Recommendation[]>>;
     /**
      * Get anime Relations
      * @param id manga id
      */
-    getMangaRelations(id: number): Promise<JikanResponse<JikanRelation[]>>;
+    getMangaRelations(id: number): Promise<JikanResponseFull<JikanRelation[]>>;
     /**
      * Get manga external links
      * @param id manga id
      */
-    getMangaExternal(id: number): Promise<JikanResponse<JikanExternalLink[]>>;
+    getMangaExternal(id: number): Promise<JikanResponseFull<JikanExternalLink[]>>;
     /**
      * Get all the filtered Mangas. Returns all the Mangas if no filters are given.
      * @param searchParams Filter parameters
      */
-    getMangaSearch(searchParams?: Partial<MangaSearchParams>): Promise<JikanResponse<Manga[]>>;
+    getMangaSearch(searchParams?: Partial<MangaSearchParams>): Promise<JikanResponseFull<Manga[]>>;
 }
 
 /**
@@ -726,15 +746,15 @@ declare class RandomClient extends BaseClient {
     /**
      * Get random anime
      */
-    getRandomAnime(): Promise<JikanResponse<Anime>>;
+    getRandomAnime(): Promise<JikanResponseFull<Anime>>;
     /**
      * Get random manga
      */
-    getRandomManga(): Promise<JikanResponse<Manga>>;
+    getRandomManga(): Promise<JikanResponseFull<Manga>>;
     /**
      * Get random character
      */
-    getRandomCharacters(): Promise<JikanResponse<Character>>;
+    getRandomCharacters(): Promise<JikanResponseFull<Character>>;
 }
 
 /**
@@ -749,7 +769,7 @@ declare class SchedulesClient extends BaseClient {
      * Returns weekly schedule
      * @param searchParams Filter parameters
      */
-    getSchedules(searchParams?: Partial<SchedulesParams>): Promise<JikanResponse<Anime[]>>;
+    getSchedules(searchParams?: Partial<SchedulesParams>): Promise<JikanResponseFull<Anime[]>>;
 }
 
 /**
@@ -766,21 +786,21 @@ declare class SeasonsClient extends BaseClient {
      * @param season Season value
      * @param searchParams Filter parameters
      */
-    getSeason(year: number, season: AnimeSeason, searchParams?: Partial<JikanSeasonsParams>): Promise<JikanResponse<Anime[]>>;
+    getSeason(year: number, season: AnimeSeason, searchParams?: Partial<JikanSeasonsParams>): Promise<JikanResponseFull<Anime[]>>;
     /**
      * Get current seasonal anime
      * @param searchParams Filter parameters
      */
-    getSeasonNow(searchParams?: Partial<SeasonNowParams>): Promise<JikanResponse<Anime[]>>;
+    getSeasonNow(searchParams?: Partial<SeasonNowParams>): Promise<JikanResponseFull<Anime[]>>;
     /**
      * Get available list of seasons
      */
-    getSeasonsList(): Promise<JikanResponse<SeasonsListData[]>>;
+    getSeasonsList(): Promise<JikanResponseFull<SeasonsListData[]>>;
     /**
      * Get upcoming season's anime
      * @param searchParams Filter parameters
      */
-    getSeasonUpcoming(searchParams?: Partial<JikanSeasonsParams>): Promise<JikanResponse<Anime[]>>;
+    getSeasonUpcoming(searchParams?: Partial<JikanSeasonsParams>): Promise<JikanResponseFull<Anime[]>>;
 }
 
 /**
@@ -795,17 +815,17 @@ declare class TopClient extends BaseClient {
      * Get the top Animes
      * @param searchParams Filter parameters
      */
-    getTopAnime(searchParams?: Partial<AnimeTopParams>): Promise<JikanResponse<Anime[]>>;
+    getTopAnime(searchParams?: Partial<AnimeTopParams>): Promise<JikanResponseFull<Anime[]>>;
     /**
      * Get the top Mangas
      * @param searchParams Filter parameters
      */
-    getTopManga(searchParams?: Partial<MangaTopParams>): Promise<JikanResponse<Manga[]>>;
+    getTopManga(searchParams?: Partial<MangaTopParams>): Promise<JikanResponseFull<Manga[]>>;
     /**
      * Get the top Characters
      * @param searchParams Filter parameters
      */
-    getTopCharacters(searchParams?: Partial<JikanTopParams>): Promise<JikanResponse<Character[]>>;
+    getTopCharacters(searchParams?: Partial<JikanTopParams>): Promise<JikanResponseFull<Character[]>>;
 }
 
 /**
@@ -902,4 +922,4 @@ declare const RandomEndpoints: {
     readonly randomCharacters: "random/characters";
 };
 
-export { type Anime, type AnimeBroadcast, type AnimeCharacter, AnimeClient, AnimeEndpoints, type AnimeEpisode, type AnimeEpisodeVideo, type AnimeMusicVideo, type AnimePicture, type AnimePromoVideo, type AnimeRating, type AnimeSearchOrder, type AnimeSearchParams, type AnimeSearchStatus, type AnimeSeason, type AnimeStaff, type AnimeStatistics, type AnimeStatus, type AnimeTheme, type AnimeTopParams, type AnimeType, type AnimeVideoMeta, type AnimeVideos, type AnimeYoutubeVideo, BaseClient, BaseURL, type Character, type CharacterAnime, type CharacterFull, type CharacterManga, type CharacterRole, type CharacterVoiceActor, CharactersClient, CharactersEndpoints, type CharactersSearchOrder, type CharactersSearchParams, type CommonCharacter, type CommonCharacterData, type ForumFilter, type Genre, GenresClient, GenresEndpoints, type GenresFilter, JikanClient, type JikanExternalLink, type JikanForum, type JikanImages, type JikanImagesCollection, type JikanMoreInfo, type JikanNamedResource, type JikanNews, type JikanPagination, type JikanPaginationItems, type JikanPerson, type JikanRelation, type JikanResource, type JikanResourcePeriod, type JikanResourceRelation, type JikanResourceTitle, type JikanResponse, type JikanSearchParams, type JikanSeasonsParams, type JikanTopParams, type Manga, MangaClient, MangaEndpoints, type MangaSearchOrder, type MangaSearchParams, type MangaSearchStatus, type MangaStatistics, type MangaStatus, type MangaTopParams, type MangaType, RandomClient, RandomEndpoints, type Recommendation, type RecommendationEntry, type RelationEntry, SchedulesClient, type SchedulesFilter, type SchedulesParams, type SearchOrder, type SeasonNowParams, SeasonsClient, SeasonsEndpoints, type SeasonsListData, type SortOptions, type Statistics, type StatisticsScore, type TopAnimeFilter, TopClient, TopEndpoints, type TopMangaFilter };
+export { type Anime, type AnimeBroadcast, type AnimeCharacter, AnimeClient, AnimeEndpoints, type AnimeEpisode, type AnimeEpisodeVideo, type AnimeMusicVideo, type AnimePicture, type AnimePromoVideo, type AnimeRating, type AnimeSearchOrder, type AnimeSearchParams, type AnimeSearchStatus, type AnimeSeason, type AnimeStaff, type AnimeStatistics, type AnimeStatus, type AnimeTheme, type AnimeTopParams, type AnimeType, type AnimeVideoMeta, type AnimeVideos, type AnimeYoutubeVideo, BaseClient, BaseURL, type Character, type CharacterAnime, type CharacterFull, type CharacterManga, type CharacterRole, type CharacterVoiceActor, CharactersClient, CharactersEndpoints, type CharactersSearchOrder, type CharactersSearchParams, type CommonCharacter, type CommonCharacterData, type ForumFilter, type Genre, GenresClient, GenresEndpoints, type GenresFilter, JikanClient, type JikanExternalLink, type JikanForum, type JikanImages, type JikanImagesCollection, type JikanMoreInfo, type JikanNamedResource, type JikanNews, type JikanPagination, type JikanPaginationItems, type JikanPerson, type JikanRelation, type JikanResource, type JikanResourcePeriod, type JikanResourceRelation, type JikanResourceTitle, type JikanResponse, type JikanResponseFull, type JikanResponseHeader, type JikanSearchParams, type JikanSeasonsParams, type JikanTopParams, type Manga, MangaClient, MangaEndpoints, type MangaSearchOrder, type MangaSearchParams, type MangaSearchStatus, type MangaStatistics, type MangaStatus, type MangaTopParams, type MangaType, RandomClient, RandomEndpoints, type Recommendation, type RecommendationEntry, type RelationEntry, SchedulesClient, type SchedulesFilter, type SchedulesParams, type SearchOrder, type SeasonNowParams, SeasonsClient, SeasonsEndpoints, type SeasonsListData, type SortOptions, type Statistics, type StatisticsScore, type TopAnimeFilter, TopClient, TopEndpoints, type TopMangaFilter };
